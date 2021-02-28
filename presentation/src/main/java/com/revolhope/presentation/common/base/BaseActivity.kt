@@ -49,13 +49,14 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
         checkNavigationTransition(intent, isBack = false)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean =
         if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            true
+            //onBackPressed()
+            //true
+            super.onOptionsItemSelected(item)
         } else {
             super.onOptionsItemSelected(item)
-        }
+        }*/
 
     open fun onBindViews() {
         // Nothing to do here

@@ -1,8 +1,12 @@
 package com.revolhope.presentation.feature.dashboard
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -15,80 +19,51 @@ import com.revolhope.presentation.R
 import com.revolhope.presentation.common.base.BaseActivity
 import com.revolhope.presentation.databinding.ActivityDashboardBinding
 
-class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
+class DashboardActivity : AppCompatActivity()/*BaseActivity<ActivityDashboardBinding>()*/ {
 
     private lateinit var navController: NavController
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navView: NavigationView
     private lateinit var appBarConfiguration: AppBarConfiguration
-
-
-
-    override val binding: ActivityDashboardBinding
-        get() = ActivityDashboardBinding.inflate(layoutInflater)
+    private lateinit var binding: ActivityDashboardBinding
+    /*override val binding: ActivityDashboardBinding
+        get() = ActivityDashboardBinding.inflate(layoutInflater)*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setSupportActionBar(findViewById(R.id.toolbar))
 
         findNavController(R.id.nav_host_fragment).run {
             navController = this
             setupActionBarWithNavController(
-                navController = navController,
+                navController = this,
                 configuration = AppBarConfiguration(
                     topLevelDestinationIds = setOf(
                         R.id.nav_home,
                         R.id.nav_gallery,
                         R.id.nav_slideshow
                     ),
-                    drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout).also { drawerLayout = it }
+                    drawerLayout = binding.drawerLayout
                 ).also { appBarConfiguration = it }
             )
-            navView = findViewById<NavigationView>(R.id.nav_view).also {
-                it.setupWithNavController(navController)
+            /*findViewById<NavigationView>(R.id.nav_view).also {
+                it.setupWithNavController(this)
+            }*/
+            binding.navView.setupWithNavController(this)
+            binding.navView.setNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.nav_gallery -> {
+                        Log.i("MainActivity", "nav_gallery!")
+                    }
+                    R.id.nav_home -> {
+                        Log.i("MainActivity", "nav_home!")
+                    }
+                }
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                true
             }
         }
-
-        /*supportFragmentManager.findFragmentById(R.id.nav_host_fragment).let {
-            (it as? NavHostFragment)?.navController
-        }?.run {
-            setupActionBarWithNavController(
-                navController = this,
-                configuration = AppBarConfiguration(
-                    topLevelDestinationIds = setOf(
-                        R.id.nav_home,
-                        R.id.nav_gallery,
-                        R.id.nav_slideshow
-                    ),
-                    drawerLayout = binding.drawerLayout
-                ).also { appBarConfiguration = it }
-            )
-            binding.navView.setupWithNavController(this)
-            navController = this
-        }*/
     }
-
-    /*override fun onBindViews() {
-        super.onBindViews()
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportFragmentManager.findFragmentById(R.id.nav_host_fragment).let {
-            (it as? NavHostFragment)?.navController
-        }?.run {
-            setupActionBarWithNavController(
-                navController = this,
-                configuration = AppBarConfiguration(
-                    topLevelDestinationIds = setOf(
-                        R.id.nav_home,
-                        R.id.nav_gallery,
-                        R.id.nav_slideshow
-                    ),
-                    drawerLayout = binding.drawerLayout
-                ).also { appBarConfiguration = it }
-            )
-            binding.navView.setupWithNavController(this)
-            navController = this
-        }
-    }*/
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.dashboard, menu)
